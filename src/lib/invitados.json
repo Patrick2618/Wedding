@@ -1,0 +1,42 @@
+[
+{
+"token": "12345678",
+"nombre_completo": "Andrea Ramírez",
+"correo_electronico": "andrea@example.com",
+"boletos_maximos": 2,
+"boletos_solicitados": 2,
+"comida": "Vegano"
+},
+{
+"token": "23456789",
+"nombre_completo": "Marta Gómez",
+"correo_electronico": null,
+"boletos_maximos": 1,
+"boletos_solicitados": 1,
+"comida": "Vegano"
+},
+{
+"token": "34567890",
+"nombre_completo": "Carlos Ruiz",
+"correo_electronico": "carlos.ruiz@example.com",
+"boletos_maximos": 5,
+"boletos_solicitados": 3,
+"comida": "Carne"
+},
+{
+"token": "45678901",
+"nombre_completo": "Laura Martínez",
+"correo_electronico": "laura.m@example.com",
+"boletos_maximos": 3,
+"boletos_solicitados": 2,
+"comida": "Vegano"
+},
+{
+"token": "87654321",
+"nombre_completo": "Luis Fernández",
+"correo_electronico": "luis@example.com",
+"boletos_maximos": 4,
+"boletos_solicitados": 2,
+"comida": "Salmon"
+}
+]
