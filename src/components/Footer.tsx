@@ -17,107 +17,70 @@ const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="bg-secondary border-t border-primary/20 footeer">
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Logo y información principal */}
-          <div className="text-center md:text-left">
-            <div className="flex items-center justify-center md:justify-start space-x-2 mb-4">
-              <div className="bg-primary p-2 rounded-full">
-                <Heart className="h-5 w-5 text-white" />
-              </div>
-              <div>
-                <h3 className="font-heading text-xl font-semibold text-text-primary">
-                  Damaris & Jose Luis
-                </h3>
-                <p className="text-sm text-text-secondary">
-                  29 de Noviembre, 2025
-                </p>
-              </div>
-            </div>
-            <p className="text-text-secondary text-sm leading-relaxed">
-              Nos complace invitarte a celebrar nuestro día especial. 
-              Tu presencia hará que este momento sea aún más memorable.
+    <footer className="bg-[#fdfcf9] border-t border-gray-300 foooter">
+      <div className="container mx-auto px-6 py-12">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-8 md:space-y-0">
+          
+          {/* Información principal */}
+          <div className="md:w-1/3 text-center md:text-left">
+            <h3 className="text-2xl font-[Times New Roman] text-[#111] mb-2">
+              Damariz & José Luis
+            </h3>
+            <p className="text-sm text-gray-600 mb-2 font-[Times New Roman] uppercase tracking-wide">
+              29 de Noviembre, 2025
+            </p>
+            <p className="text-sm text-gray-600 font-[Times New Roman] leading-relaxed">
+              Nos complace invitarte a celebrar nuestro día especial. Tu presencia hará que este momento sea aún más memorable.
             </p>
           </div>
-          
+
           {/* Información del evento */}
-          <div className="text-center md:text-left">
-            <h4 className="font-heading text-lg font-semibold text-text-primary mb-4">
-              Información del Evento
-            </h4>
-            <div className="space-y-3">
-              <div className="flex items-center justify-center md:justify-start space-x-3">
-                <MapPin className="h-4 w-4 text-accent flex-shrink-0" />
-                <span className="text-text-secondary text-sm">
-                  “La Macarena”, Zapopan
-                </span>
-              </div>
-              <div className="flex items-center justify-center md:justify-start space-x-3">
-                <Clock className="h-4 w-4 text-accent flex-shrink-0" />
-                <span className="text-text-secondary text-sm">
-                  19:00 - 02:00
-                </span>
-              </div>
-              <div className="flex items-center justify-center md:justify-start space-x-3">
-                <Phone className="h-4 w-4 text-accent flex-shrink-0" />
-                <span className="text-text-secondary text-sm">
-                  +52 33 1279 2189
-                </span>
-              </div>
-              <div className="flex items-center justify-center md:justify-start space-x-3">
-                <Mail className="h-4 w-4 text-accent flex-shrink-0" />
-                <span className="text-text-secondary text-sm">
-                  boda@d&jl.com
-                </span>
-              </div>
-            </div>
+          <div className="md:w-1/3 text-center md:text-left space-y-2 text-gray-600 font-[Times New Roman] text-sm">
+            <p>📍 La Macarena, Zapopan</p>
+            <p>⏰ 19:00 - 02:00</p>
+            <p>📞 +52 33 1279 2189</p>
+            <p>✉️ damarizyjoseluis.com</p>
           </div>
-          
+
           {/* Enlaces rápidos */}
-          <div className="text-center md:text-left">
-            <h4 className="font-heading text-lg font-semibold text-text-primary mb-4">
-              Enlaces Rápidos
-            </h4>
-            <div className="space-y-2">
-              <Link
-                to="/inicio"
-                className="block text-text-secondary hover:text-primary transition-colors text-sm"
-              >
-                Inicio
-              </Link>
-              <Link
-                to="/informacion"
-                className="block text-text-secondary hover:text-primary transition-colors text-sm"
-              >
-                Información del Evento
-              </Link>
-              <Link
-                to="/inicio#boletoss"
-                className="block text-text-secondary hover:text-primary transition-colors text-sm"
-              >
-                Confirmar Asistencia
-              </Link>
-              <a
-                href='https://maps.app.goo.gl/L7UTK74nFgkUQggP6'
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block text-text-secondary hover:text-primary transition-colors text-sm"
-              >
-                Cómo Llegar
-              </a>
-            </div>
+          <div className="md:w-1/3 text-center md:text-left space-y-2 text-gray-600 font-[Times New Roman] text-sm">
+            <Link
+              to="/inicio"
+              className="block hover:text-gray-900 transition-colors"
+            >
+              Inicio
+            </Link>
+            <Link
+              to="/informacion"
+              className="block hover:text-gray-900 transition-colors"
+            >
+              Información
+            </Link>
+            <Link
+              to="/inicio#boletoss"
+              className="block hover:text-gray-900 transition-colors"
+            >
+              Confirmar Asistencia
+            </Link>
+            <a
+              href="https://maps.app.goo.gl/L7UTK74nFgkUQggP6"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block hover:text-gray-900 transition-colors"
+            >
+              Cómo Llegar
+            </a>
           </div>
         </div>
-        
-        {/* Línea divisoria y copyright */}
-        <div className="border-t border-primary/20 mt-8 pt-6">
+
+        {/* Línea divisoria */}
+        <div className="border-t border-gray-300 mt-8 pt-6">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
-            <p className="text-text-secondary text-sm">
-              © 2025 Damariz & Jose Luis. Hecho con ❤️ por CaniByte.
+            <p className="text-gray-600 text-sm font-[Times New Roman]">
+              © 2025 Damariz & José Luis. Hecho con ❤️ por CaniByte.
             </p>
-            <p className="text-text-secondary text-xs">
-              Por favor, confirma tu asistencia antes del 1 de Octubre.
+            <p className="text-gray-600 text-xs font-[Times New Roman]">
+              Por favor, confirma tu asistencia antes del 16 de Noviembre.
             </p>
           </div>
         </div>

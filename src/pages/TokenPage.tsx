@@ -54,6 +54,9 @@ export default function TokenPage() {
         cache: "no-store",
         });
 
+        console.log("URL:", `http://localhost:3001/api/invitados/${token}`);
+
+        console.log(res)
         if (!res.ok) {
         if (res.status === 404) throw new Error("Token no encontrado.");
         if (res.status === 400) throw new Error("Token inválido.");
