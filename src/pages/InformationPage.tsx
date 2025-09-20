@@ -16,7 +16,6 @@ import {
   Users
 } from 'lucide-react'
 import Button from '../components/Button'
-import { formatDate, formatTime } from '../lib/utils'
 import { useInvitado } from "../components/InvitadoContext";
 
 
@@ -27,6 +26,7 @@ const InformationPage: React.FC = () => {
   const [enviando, setEnviando] = useState(false);
   const [okComentario, setOkComentario] = useState(null);
   const [errComentario, setErrComentario] = useState(null);
+  const [error, setError] = useState(null)
   const { invitado } = useInvitado();
   
   
@@ -55,6 +55,33 @@ const InformationPage: React.FC = () => {
     }
   };
   
+
+
+const guardarComentarios = async () => {
+  const token = invitado?.token 
+      ? String(invitado.token).padStart(8, "0") // rellena con ceros si hiciera falta
+      : null;
+  try {
+    const res = await fetch(`http://localhost:3000/api/invitados/${token}/comentarios`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ comentarios })
+    });
+
+    if (!res.ok) throw new Error("Error al guardar comentario");
+
+    const data = await res.json();
+    console.log("✅ Guardado:", data.mensaje);
+    alert("Comentario guardado exitosamente");
+  } catch (err: any) {
+    console.error(err);
+    setError(err.message);
+  }
+};
+
+
   
  
   return (
@@ -115,10 +142,10 @@ const InformationPage: React.FC = () => {
                   </div>
                   <div>
                     <p className="font-semibold text-text-primary textt">
-                      Ceremonia Civil: 18:00
+                      Ceremonia De Bendición: 18:00
                     </p>
                     <p className="text-text-secondary text-m textt">
-                      Recepción: 19:00
+                      Recepción Civil: 19:30
                     </p>
                   </div>
                 </div>
@@ -144,7 +171,7 @@ const InformationPage: React.FC = () => {
               
               <div className="space-y-4">
                 <div>
-                  <h4 className="font-semibold text-text-primary mb-2">Ceremonia Civil</h4>
+                  <h4 className="font-semibold text-text-primary mb-2">Ceremonia</h4>
                   <p className="text-text-secondary mb-2">
                     Benito Juárez 5581, <br>
                     </br>Sta. María del Pueblito, <br>
@@ -229,33 +256,7 @@ const InformationPage: React.FC = () => {
           
           {/* Services & Amenities */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 food-container">
-            {/* Opciones de comida */}
-            <div className="col-span-1 md:col-span-3">
-              <h4 className="font-heading text-xl md:text-2xl font-semibold mb-6 text-[#2b2b2b] text-center">
-                Opciones de menú
-              </h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Pescado */}
-                <div className="opcion-menu">
-                  <div className="text-4xl mb-4">🐟</div>
-                  <h5 className="titulo-menu">Pescado</h5>
-                  <p className="descripcion-menu">
-                    Filete fresco acompañado de guarnición delicada.
-                  </p>
-                </div>
-
-                {/* Carne */}
-                <div className="opcion-menu">
-                  <div className="text-4xl mb-4">🥩</div>
-                  <h5 className="titulo-menu">Carne</h5>
-                  <p className="descripcion-menu">
-                    Corte premium en salsa, con acompañamientos selectos.
-                  </p>
-                </div>
-
-                </div>
-            </div>
-
+            
             {/* Información importante - ocupa las 3 columnas */}
             <div className="col-span-1 md:col-span-3 boletos-sub rounded-2xl p-5 md:p-6 backdrop-blur mt-6 text-black">
               <h4 className="font-heading text-lg md:text-xl font-semibold mb-4 text-[#2b2b2b]">
@@ -275,12 +276,13 @@ const InformationPage: React.FC = () => {
 
               <div className="mt-4 text-center">
                 <button
-                  onClick={enviarComentarios}
-                  disabled={enviando}
-                  className="inline-flex items-center justify-center rounded-xl bg-[rgb(253_252_249_/_0.9)] text-[#2b2b2b] hover:bg-white px-5 py-3 text-sm font-medium shadow-elegant disabled:opacity-70"
+                  type="button"
+                  onClick={guardarComentarios}
+                  className="mt-2 px-4 py-2 rounded-xl bg-[#2b2b2b] text-white hover:bg-[#444]"
                 >
-                  {enviando ? "Enviando…" : "Enviar información"}
+                  Guardar comentario
                 </button>
+
               </div>
             </div>
           </div>
@@ -306,7 +308,7 @@ const InformationPage: React.FC = () => {
                   className="inline-flex items-center rounded-lg border border-border px-3 py-2 hover:bg-primary/5 transition"
                 >
                   <Mail className="h-4 w-4 text-primary mr-2" />
-                  <span className="text-text-secondary text-sm">damariz&joseluis.com</span>
+                  <span className="text-text-secondary text-sm">info@damarizyjoseluis.com</span>
                 </a>
               </div>
 

@@ -23,7 +23,7 @@ const Header: React.FC = () => {
         setShowHeader(!entry.isIntersecting);
       },
       {
-        threshold: 0, // 0 significa que se activa apenas el banner sale de la pantalla
+        threshold: 0,
       }
     );
     observer.observe(banner);
@@ -127,7 +127,7 @@ const Header: React.FC = () => {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden py-4 border-t border-gray-200">
+          <div className="md:hidden py-4 border-t border-gray-200 cel-nav">
             <nav className="flex flex-col space-y-4 font-[Great Vibes] text-lg">
               {navigation.map((item) => (
                 <Link

@@ -1,12 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useForm } from 'react-hook-form'
-import { Heart, Calendar, MapPin, Clock, Users, ChevronRight } from 'lucide-react'
-import Button from '../components/Button'
-import LoadingSpinner from '../components/LoadingSpinner'
 import { useGuest } from '../hooks/useGuest'
-import { cn } from '../lib/utils'
-import { formatDate, formatTime } from '../lib/utils'
 import { useInvitado } from "../components/InvitadoContext";
 
 
@@ -25,15 +19,8 @@ import img12 from '../assets/background.png';
 
 
 
-interface GuestAccessForm {
-  email: string
-  lastName: string
-}
-
 const HomePage: React.FC = () => {
   const navigate = useNavigate()
-  const { findGuest, loading, error } = useGuest()
-  const [showAccessForm, setShowAccessForm] = useState(false)
   const { invitado } = useInvitado();
   const [confirmando, setConfirmando] = useState(false);
   const [ok, setOk] = useState<string | null>(null);
@@ -41,9 +28,6 @@ const HomePage: React.FC = () => {
   const [boletos, setBoletos] = useState<number>(1);
   const opcionesComida = useMemo(() => ["vegano", "salmon", "carne"] as const, []);
   const [comidaSel, setComidaSel] = useState<string>(opcionesComida[0]);
-  const [guardandoComida, setGuardandoComida] = useState(false);
-  const [okComida, setOkComida] = useState<string | null>(null);
-  const [errComida, setErrComida] = useState<string | null>(null);
 
   const imag = [
     img1, img2, img3 , img4, img5, img6, img7, img8, img9, img10, img11
@@ -124,20 +108,27 @@ const HomePage: React.FC = () => {
   };
 
   const confirmarAsistencia = async () => {
-    if (!invitado?.token) {
+    // obligamos a que sea string
+    const token = invitado?.token 
+      ? String(invitado.token).padStart(8, "0") // rellena con ceros si hiciera falta
+      : null;
+
+    console.log("DEBUG token:", token);
+
+    if (!token || !/^\d{8}$/.test(token)) {
       setErr("No hay token válido para confirmar.");
       return;
     }
-    setConfirmando(true);
-    setErr(null);
-    setOk(null);
 
     try {
       const res = await fetch(
-        `http://localhost:3001/api/invitados/${invitado.token}/boletos`,
+        `http://localhost:3000/api/invitados/${token}/boletos`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
           body: JSON.stringify({ boletos_solicitados: boletos }),
         }
       );
@@ -156,76 +147,7 @@ const HomePage: React.FC = () => {
     }
   };
 
-  const guardarComida = async () => {
-    if (!invitado?.token) {
-      setErrComida("No hay token válido para guardar la comida.");
-      return;
-    }
-    setGuardandoComida(true);
-    setOkComida(null);
-    setErrComida(null);
-    try {
-      const res = await fetch(
-        `http://localhost:3001/api/invitados/${invitado.token}/comida`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Accept: "application/json" },
-          body: JSON.stringify({ comida: comidaSel }),
-        }
-      );
-      if (!res.ok) {
-        if (res.status === 400) throw new Error("Solicitud inválida.");
-        if (res.status === 404) throw new Error("Invitación no encontrada.");
-        throw new Error(`Error del servidor (${res.status}).`);
-      }
-      setOkComida("¡Registro de comida guardado!");
-    } catch (e: any) {
-      setErrComida(e?.message || "No se pudo guardar la comida.");
-    } finally {
-      setGuardandoComida(false);
-    }
-  };
 
-  // Reemplaza tu helper de tarjetas de comida por ESTE (mejor para desktop y muestra <img/>)
-  const renderFoodCard = (key: string, label: string, src: string) => {
-    const activo = comidaSel === key;
-    return (
-      <button
-        key={key}
-        type="button"
-        onClick={() => setComidaSel(key)}
-        aria-pressed={activo}
-        className={[
-          "group text-left rounded-2xl overflow-hidden shadow-elegant border transition",
-          "bg-white/95 hover:bg-white hover:shadow-lg",
-          activo ? "border-primary ring-2 ring-primary/30" : "border-border"
-        ].join(" ")}
-      >
-        <figure className="relative w-full aspect-[16/10] overflow-hidden">
-          <img
-            src={src}
-            alt={label}
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-            loading="lazy"
-          />
-          {activo && (
-            <div className="absolute inset-0 ring-inset ring-2 ring-primary pointer-events-none" />
-          )}
-        </figure>
-        <div className="p-4 flex items-center justify-between">
-          <span className="font-semibold text-text-primary">{label}</span>
-          <span
-            className={[
-              "inline-flex items-center justify-center w-6 h-6 rounded-full border text-xs",
-              activo ? "bg-primary text-white border-primary" : "border-border text-transparent"
-            ].join(" ")}
-          >
-            ✓
-          </span>
-        </div>
-      </button>
-    );
-  };
 
 
   return (
@@ -260,11 +182,11 @@ const HomePage: React.FC = () => {
             </div>
 
             {/* CONTENIDO ENCIMA DEL SLIDESHOW */}
-            <div className="relative z-20 flex items-center justify-center h-full">
-              <div className="px-6 text-center text-white w-full">
+            <div className="relative z-20 flex items-center justify-center h-full banner">
+              <div className="text-center text-white w-full">
 
                 {/* Padres */}
-                <p className="text-base tracking-[0.15em] mb-6 font-[Times New Roman] uppercase leading-relaxed padrees">
+                <p className="text-base tracking-[0.15em] mb-6 font-[Times New Roman] uppercase leading-relaxed padrees" id='first-text'>
                   Con la bendición de Dios y en compañía de nuestros padres:
                 </p>
 
@@ -279,29 +201,29 @@ const HomePage: React.FC = () => {
                 </div>
 
                 {/* Nombres — más grandes y con máscara ligera detrás para máxima legibilidad */}
-                <div className="inline-block px-6 py-2 rounded-lg ff">
+                <div className="inline-block py-2 rounded-lg ff">
                   <h2 className="name-large font-great">DAMARIZ</h2>
-                  <span className="block name-amp font-y mb-1">&</span>
+                  <span className="block name-amp font-y mb-1 span-text">&</span>
                   <h2 className="name-large font-great">JOSÉ LUIS</h2>
                 </div>
 
 
                 {/* Texto invitación (text-base medium) */}
-                <p className="text-lg md:text-xl font-medium tracking-[0.15em] mt-6 mb-4 font-[Times New Roman] uppercase leading-relaxed text-black/90">
+                <p className="text-lg md:text-xl font-medium tracking-[0.15em] mt-6 mb-4 font-[Times New Roman] uppercase leading-relaxed text-black/90 inicio-pad">
                   Tenemos el honor de invitarle a la ceremonia de bendición de nuestra unión que se celebrará el día
                 </p>
 
                 {/* Fecha y lugar */}
-                <p className="text-lg font-[Times New Roman] uppercase mb-4 tracking-[0.1em] text-black">
+                <p className="text-lg font-[Times New Roman] uppercase mb-4 tracking-[0.1em] text-date">
                   Sábado 29 de Noviembre a las 18:00 hrs.
                 </p>
 
-                <p className="text-sm font-[Times New Roman] uppercase leading-relaxed tracking-[0.15em] text-black/90">
+                <p className="text-sm font-[Times New Roman] uppercase leading-relaxed tracking-[0.15em] text-black/90 banner-small">
                   La bendición será impartida por el Sr. Cura Juan Gilberto Huerta Reyes <br />
                   en la Parroquia de Santa María del Pueblito, Benito Juárez No. 5581, C.P. 45018.
                 </p>
 
-                <p className="text-sm italic mt-6 font-[Times New Roman] text-black/80">
+                <p className="text-sm italic mt-6 font-[Times New Roman] text-black/80 banner-small">
                   Zapopan, Jalisco, 2025
                 </p>
               </div>
@@ -316,16 +238,9 @@ const HomePage: React.FC = () => {
       <section className="py-16 bg-white font-[Times New Roman]">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
-            {/* <h2 className="font-heading text-3xl font-semibold text-text-primary mb-6">
-              Un Día Para Recordar
-            </h2>
-            <p className="text-lg text-text-secondary leading-relaxed mb-8">
-              Después de años de amor y complicidad, hemos decidido dar el siguiente paso 
-              en nuestras vidas. Queremos compartir este momento tan especial contigo, 
-              rodeados de las personas que más queremos.
-            </p> */}
+            
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="bg-secondary/30 rounded-lg p-6">
+              <div className="bg-secondary/30 rounded-lg p-6 ceremonias">
                 <h3 className="font-heading text-xl font-semibold text-text-primary mb-3">
                   Ceremonia
                 </h3>
@@ -333,12 +248,12 @@ const HomePage: React.FC = () => {
                   La ceremonia comenzará a las 18:00 en la parroquia de Ntra. Señora del Pueblito
                 </p>
               </div>
-              <div className="bg-secondary/30 rounded-lg p-6">
+              <div className="bg-secondary/30 rounded-lg p-6 ceremonias">
                 <h3 className="font-heading text-xl font-semibold text-text-primary mb-3">
                   Celebración
                 </h3>
                 <p className="text-text-secondary">
-                  La ceremonia civíl y la recepcion se llevará a cabo en el Salón Boutique “La Macarena” a partir de las 19:00 hrs
+                  La ceremonia civíl y la recepcion se llevará a cabo en el Salón Boutique “La Macarena” a partir de las 19:30 hrs
                   con música, baile y mucha diversión.
                 </p>
               </div>
@@ -429,81 +344,80 @@ const HomePage: React.FC = () => {
               </div>
 
 
-<div className="relative w-full flex justify-center items-center py-16 overflow-hidden container-photos">
-   <div className="bubbles">
-    <div className="bubble bubble-1"></div>
-    <div className="bubble bubble-2"></div>
-    <div className="bubble bubble-3"></div>
-    <div className="bubble bubble-4"></div>
-  </div>
+              <div className="relative w-full flex justify-center items-center py-16 overflow-hidden container-photos">
+                <div className="bubbles">
+                  <div className="bubble bubble-1"></div>
+                  <div className="bubble bubble-2"></div>
+                  <div className="bubble bubble-3"></div>
+                  <div className="bubble bubble-4"></div>
+                </div>
 
-  <div className="w-full max-w-4xl mx-auto text-center photo-box">
-    <h2 className="font-heading text-2xl md:text-3xl font-semibold text-text-primary mb-6">
-      Nuestra Historia en Fotos
-    </h2>
+                <div className="w-full max-w-4xl mx-auto text-center photo-box">
+                  <h2 className="font-heading text-2xl md:text-3xl font-semibold text-text-primary mb-6">
+                    Nuestra Historia en Fotos
+                  </h2>
 
-    {/* CARRUSEL: aquí van las burbujas dentro del contenedor padre */}
-    <div className="relative overflow-hidden rounded-lg shadow-lg border-4 border-secondary">
-      {/* Fondo animado DENTRO del contenedor del carrusel */}
-      <div className="absolute inset-0 pointer-events-none z-0">
-        <div
-          className="absolute w-[28rem] h-[28rem] rounded-full mix-blend-multiply filter blur-3xl bg-secondary/30 bg-bubble"
-          style={{ top: '2rem', left: '2rem', animationDelay: '0s' }}
-        />
-        <div
-          className="absolute w-[32rem] h-[32rem] rounded-full mix-blend-multiply filter blur-3xl bg-secondary/20 bg-bubble"
-          style={{ top: '30%', right: '2rem', animationDelay: '2s' }}
-        />
-        <div
-          className="absolute w-[26rem] h-[26rem] rounded-full mix-blend-multiply filter blur-3xl bg-secondary/25 bg-bubble"
-          style={{ bottom: '1.5rem', left: '25%', animationDelay: '4s' }}
-        />
-      </div>
+                  {/* CARRUSEL: aquí van las burbujas dentro del contenedor padre */}
+                  <div className="relative overflow-hidden rounded-lg shadow-lg border-4 border-secondary">
+                    {/* Fondo animado DENTRO del contenedor del carrusel */}
+                    <div className="absolute inset-0 pointer-events-none z-0">
+                      <div
+                        className="absolute w-[28rem] h-[28rem] rounded-full mix-blend-multiply filter blur-3xl bg-secondary/30 bg-bubble"
+                        style={{ top: '2rem', left: '2rem', animationDelay: '0s' }}
+                      />
+                      <div
+                        className="absolute w-[32rem] h-[32rem] rounded-full mix-blend-multiply filter blur-3xl bg-secondary/20 bg-bubble"
+                        style={{ top: '30%', right: '2rem', animationDelay: '2s' }}
+                      />
+                      <div
+                        className="absolute w-[26rem] h-[26rem] rounded-full mix-blend-multiply filter blur-3xl bg-secondary/25 bg-bubble"
+                        style={{ bottom: '1.5rem', left: '25%', animationDelay: '4s' }}
+                      />
+                    </div>
 
-      {/* Slides (por encima del fondo animado) */}
-      <div className="relative z-10">
-        <div
-          className="flex transition-transform ease-in-out duration-700"
-          style={{ transform: `translateX(-${current * 100}%)` }}
-        >
-          {imag.map((src, idx) => (
-            <div key={idx} className="w-full flex-shrink-0 relative h-[400px] md:h-[550px]">
-              <img src={src} alt={`Foto ${idx + 1}`} className="w-full h-full object-cover" />
-            </div>
-          ))}
-        </div>
+                    {/* Slides (por encima del fondo animado) */}
+                    <div className="relative z-10">
+                      <div
+                        className="flex transition-transform ease-in-out duration-700"
+                        style={{ transform: `translateX(-${current * 100}%)` }}
+                      >
+                        {imag.map((src, idx) => (
+                          <div key={idx} className="w-full flex-shrink-0 relative h-[400px] md:h-[550px]">
+                            <img src={src} alt={`Foto ${idx + 1}`} className="w-full h-full object-cover" />
+                          </div>
+                        ))}
+                      </div>
 
-        {/* Botones sobre las imágenes */}
-        <button
-          onClick={prevSlide}
-          className="absolute top-1/2 left-4 -translate-y-1/2 z-20 bg-secondary/70 text-white p-3 rounded-full hover:bg-secondary transition"
-        >‹</button>
+                      {/* Botones sobre las imágenes */}
+                      <button
+                        onClick={prevSlide}
+                        className="absolute top-1/2 left-4 -translate-y-1/2 z-20 bg-secondary/70 text-white p-3 rounded-full hover:bg-secondary transition"
+                      >‹</button>
 
-        <button
-          onClick={nextSlide}
-          className="absolute top-1/2 right-4 -translate-y-1/2 z-20 bg-secondary/70 text-white p-3 rounded-full hover:bg-secondary transition"
-        >›</button>
-      </div>
-    </div>
+                      <button
+                        onClick={nextSlide}
+                        className="absolute top-1/2 right-4 -translate-y-1/2 z-20 bg-secondary/70 text-white p-3 rounded-full hover:bg-secondary transition"
+                      >›</button>
+                    </div>
+                  </div>
 
-    {/* Miniaturas */}
-    <div className="flex justify-center mt-4 gap-2 flex-wrap">
-      {imag.map((src, idx) => (
-        <button
-          key={idx}
-          onClick={() => goToSlide(idx)}
-          className={`relative w-12 h-12 rounded-md overflow-hidden border-2 transition ${
-            idx === current ? "border-secondary" : "border-transparent"
-          }`}
-        >
-          <img src={src} alt={`Thumb ${idx + 1}`} className="w-full h-full object-cover" />
-        </button>
-      ))}
-    </div>
-  </div>
-</div>
-
-                
+                  {/* Miniaturas */}
+                  <div className="flex justify-center mt-4 gap-2 flex-wrap">
+                    {imag.map((src, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => goToSlide(idx)}
+                        className={`relative w-12 h-12 rounded-md overflow-hidden border-2 transition ${
+                          idx === current ? "border-secondary" : "border-transparent"
+                        }`}
+                      >
+                        <img src={src} alt={`Thumb ${idx + 1}`} className="w-full h-full object-cover" />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+    
             </div>
           </div>
         </div>

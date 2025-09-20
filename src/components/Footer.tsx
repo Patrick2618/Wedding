@@ -22,7 +22,7 @@ const Footer: React.FC = () => {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-8 md:space-y-0">
           
           {/* Información principal */}
-          <div className="md:w-1/3 text-center md:text-left">
+          <div className="md:w-1/3 text-center md:text-left footer-text">
             <h3 className="text-2xl font-[Times New Roman] text-[#111] mb-2">
               Damariz & José Luis
             </h3>
@@ -35,15 +35,15 @@ const Footer: React.FC = () => {
           </div>
 
           {/* Información del evento */}
-          <div className="md:w-1/3 text-center md:text-left space-y-2 text-gray-600 font-[Times New Roman] text-sm">
+          <div className="md:w-1/3 text-center md:text-left footer-text space-y-2 text-gray-600 font-[Times New Roman] text-sm">
             <p>📍 La Macarena, Zapopan</p>
             <p>⏰ 19:00 - 02:00</p>
             <p>📞 +52 33 1279 2189</p>
-            <p>✉️ damarizyjoseluis.com</p>
+            <p>✉️ info@damarizyjoseluis.com</p>
           </div>
 
           {/* Enlaces rápidos */}
-          <div className="md:w-1/3 text-center md:text-left space-y-2 text-gray-600 font-[Times New Roman] text-sm">
+          <div className="md:w-1/3 text-center md:text-left footer-text space-y-2 text-gray-600 font-[Times New Roman] text-sm">
             <Link
               to="/inicio"
               className="block hover:text-gray-900 transition-colors"
@@ -74,7 +74,7 @@ const Footer: React.FC = () => {
         </div>
 
         {/* Línea divisoria */}
-        <div className="border-t border-gray-300 mt-8 pt-6">
+        <div className="border-t border-gray-300 mt-8 pt-6 ">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
             <p className="text-gray-600 text-sm font-[Times New Roman]">
               © 2025 Damariz & José Luis. Hecho con ❤️ por CaniByte.

@@ -48,13 +48,13 @@ export default function TokenPage() {
     const t = setTimeout(() => ctrl.abort(), 10000);
 
     try {
-        const res = await fetch(`http://localhost:3001/api/invitados/${token}`, {
+        const res = await fetch(`http://localhost:3000/api/invitados/${token}`, {
         headers: { Accept: "application/json" },
         signal: ctrl.signal,
         cache: "no-store",
         });
 
-        console.log("URL:", `http://localhost:3001/api/invitados/${token}`);
+        console.log("URL:", `http://localhost:3000/api/invitados/${token}`);
 
         console.log(res)
         if (!res.ok) {
@@ -64,31 +64,28 @@ export default function TokenPage() {
         }
 
         const data = await res.json();
+        console.log("DATA:", data);
 
         // Validaciones mínimas
-        if (
-        !data ||
-        typeof data !== "object" ||
-        !/^[0-9]{8}$/.test(String(data.token)) ||
-        typeof data.nombre_completo !== "string" ||
-        typeof data.boletos_maximos !== "number"
-        ) {
-        throw new Error("Respuesta inesperada del servidor.");
+        if (!data || !data.id || !data.nombre || !data.max_boletos) {
+          throw new Error("Respuesta inesperada del servidor.");
         }
 
-        setInvitado({
-          id: Number(data.token),
-          token: String(data.token),
-          nombre_completo: data.nombre_completo,
-          boletos_maximos: data.boletos_maximos,
-          email: data.correo_electronico ?? null,
-          telefono: null,
-          mesa: null,
-          confirmados: typeof data.boletos_solicitados === "number" ? data.boletos_solicitados : null,
-          comida: (typeof data.comida === "string" ? String(data.comida) : null),
-          notas: null,
-        });
 
+        const invitado = {
+          id: Number(data.id),
+          token: String(data.id), // usa `id` como token
+          nombre_completo: data.nombre,
+          boletos_maximos: data.max_boletos,
+          email: null,
+          telefono: data.telefono ?? null,
+          mesa: null,
+          confirmados: data.boletos ?? null,
+          comida: null,
+          notas: data.comentarios ?? null,
+        };
+
+        setInvitado(invitado);
         // NUEVO: persistir token e ir a /registro/:guestId
         localStorage.setItem("inv:token", String(data.token));
         navigate('/registro', { replace: true });
